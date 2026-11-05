@@ -1,0 +1,79 @@
+// Forge 1.20.1 port of Quartz Elevator 2.2.7 by Aton-Kish (MIT).
+// Source: github.com/Aton-Kish/quartz-elevator, branch 1.20.4, commit 099ca17.
+
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
+}
+
+group = 'atonkish.quartzelv'
+version = '2.2.7-1.20.1-forge'
+
+base {
+    archivesName = 'quartz-elevator'
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+minecraft {
+    mappings channel: mapping_channel, version: mapping_version
+    copyIdeResources = true
+
+    runs {
+        configureEach {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'info'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            mods { quartzelv { source sourceSets.main } }
+        }
+        client { workingDirectory project.file('run_client') }
+        server { args '--nogui' }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+mixin {
+    add sourceSets.main, 'quartzelv.refmap.json'
+    config 'quartzelv.mixins.json'
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    var replaceProperties = [mod_version: version]
+    inputs.properties replaceProperties
+    filesMatching(['META-INF/mods.toml']) {
+        expand replaceProperties + [project: project]
+    }
+}
+
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes([
+            'MixinConfigs'            : 'quartzelv.mixins.json',
+            'Specification-Title'     : 'quartzelv',
+            'Specification-Vendor'    : 'Aton-Kish',
+            'Specification-Version'   : '1',
+            'Implementation-Title'    : project.name,
+            'Implementation-Version'  : project.jar.archiveVersion,
+            'Implementation-Vendor'   : 'Aton-Kish (Forge port: Dheightsan)'
+        ])
+    }
+    finalizedBy 'reobfJar'
+}

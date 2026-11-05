@@ -1,0 +1,31 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="MIT"
+issueTrackerURL="https://github.com/Dheightsan/quartz-elevator-forge/issues"
+
+[[mods]]
+modId="quartzelv"
+version="${mod_version}"
+displayName="Quartz Elevator"
+displayURL="https://github.com/Dheightsan/quartz-elevator-forge"
+logoFile="assets/quartzelv/icon.png"
+authors="Aton-Kish. Forge port by Dheightsan"
+credits="Original mod by Aton-Kish for Fabric (MIT). Unofficial Forge 1.20.1 port."
+description='''
+Adds quartz elevators. Jump on one to go up to the next elevator of the same type, sneak to go down.
+Unofficial Forge 1.20.1 port of Quartz Elevator by Aton-Kish. Original: https://modrinth.com/mod/quartz-elevator
+'''
+
+[[dependencies.quartzelv]]
+    modId="forge"
+    mandatory=true
+    versionRange="[47,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.quartzelv]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.1,1.21)"
+    ordering="NONE"
+    side="BOTH"
